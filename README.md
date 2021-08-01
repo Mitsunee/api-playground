@@ -2,6 +2,8 @@
 
 This repository serves as my personal playground for APIs and includes a basic cache. I have provided some comments in the [updater.js](updater.js) file as well as the [API files](apis) for the [Atlas Academy FGO Game Data API](https://api.atlasacademy.io/docs#/) that I am providing as an example.
 
+If you're here for FGO stuff, I also have a backup of my scripts related to that in the 'personal' branch.
+
 ## ApiManager
 
 The main utility in this repository is the [ApiManager](utils/ApiManager.js) class. It contains all the data to your API.
