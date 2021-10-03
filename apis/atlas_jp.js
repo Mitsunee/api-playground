@@ -9,6 +9,7 @@ atlasJP.setInfoEndpoint("info", response => response.JP);
 // Register endpoints to cache
 atlasJP
   .addEndpoint("nice_item", "export/JP/nice_item.json")
+  .addEndpoint("nice_item_lang_en", "export/JP/nice_item_lang_en.json")
   .addEndpoint("nice_servant", "export/JP/nice_servant.json")
   .addEndpoint("nice_servant_lang_en", "export/JP/nice_servant_lang_en.json");
 

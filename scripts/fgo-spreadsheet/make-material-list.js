@@ -1,19 +1,12 @@
-const niceServant = require("../../cache/atlas_jp/nice_servant_lang_en");
+const niceItem = require("../../cache/atlas_jp/nice_item_lang_en");
 
-niceServant
-  .map(servant => [
-    ...Object.values(servant.ascensionMaterials),
-    ...Object.values(servant.skillMaterials)
-  ])
-  .flat()
-  .map(i => i.items)
-  .flat()
-  .map(i => i.item)
-  .filter(
-    (value, index, self) =>
-      value.type !== "eventItem" &&
-      self.findIndex(({ id }) => id === value.id) === index
-  )
+niceItem
+  .filter(({ uses, id, type }) => {
+    if (type === "eventItem") return false;
+    if (uses.includes("skill")) return true; // gems, mats
+    if (uses.includes("ascension")) return true; // pieces, monuments
+    if (id === 7999) return true; // Holy Grail
+  })
   .sort(({ priority: a }, { priority: b }) => a - b)
   .forEach(makeMaterialRow);
 
