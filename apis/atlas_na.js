@@ -9,7 +9,8 @@ atlasNA.setInfoEndpoint("info", response => response.NA);
 // Register endpoints to cache
 atlasNA
   .addEndpoint("nice_item", "export/NA/nice_item.json")
-  .addEndpoint("nice_servant", "export/NA/nice_servant.json");
+  .addEndpoint("nice_servant", "export/NA/nice_servant.json")
+  .addEndpoint("nice_master_mission", "export/NA/nice_master_mission.json");
 
 // export for update script
 module.exports = { atlasNA };
