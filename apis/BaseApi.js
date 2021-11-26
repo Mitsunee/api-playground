@@ -1,13 +1,17 @@
-import { log } from "../utils/log.mjs";
-import { fetchJson } from "../utils/fetch.mjs";
-import { readFile, readFileJson, writeFile } from "../utils/fs.mjs";
-import { joinPath } from "../utils/path.mjs";
+import { isRoot } from "../utils/isRoot.js";
+import { joinPath } from "../utils/path.js";
+import { slugify } from "modern-diacritics";
+import { readFile, readFileJson, writeFile } from "../utils/fs.js";
+import { fetchJson } from "../utils/fetch.js";
+import { log } from "../utils/log.js";
+
+isRoot();
 
 class ApiEndpoint {
   constructor({ url, path, name, dir }) {
     this.name = name;
     this.link = `https://${url}/${path}`;
-    this.dir = joinPath(dir, name);
+    this.dir = joinPath(dir, slugify(name));
   }
 
   async checkUpdate(version) {
@@ -55,7 +59,7 @@ export class Api {
     this.url = url;
     this.endpoints = new Map();
     this.version = false;
-    this.dir = joinPath("cache", name);
+    this.dir = joinPath("cache", slugify(name));
   }
 
   setVersion({ path, fn }) {
@@ -111,4 +115,6 @@ export class Api {
 
     return data;
   }
+
+  // TODO: load (to load from endpoints with params, idk how to cache that)
 }

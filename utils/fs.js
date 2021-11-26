@@ -1,24 +1,71 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs/promises";
+import { dirname } from "path";
+import { resolvePath } from "./path.js";
 
-function resolvePath(absolutePath) {
-  return path.join(process.cwd(), absolutePath);
+export async function dirExists(filePath) {
+  const fullPath = resolvePath(filePath);
+  try {
+    const dirStat = await fs.stat(fullPath);
+    return dirStat.isDirectory();
+  } catch {
+    return false;
+  }
 }
 
-function fileExists(filePath) {
-  return fs.existsSync(resolvePath(filePath));
+export async function fileExists(filePath) {
+  const fullPath = resolvePath(filePath);
+  try {
+    const fileStat = await fs.stat(fullPath);
+    return fileStat.isFile();
+  } catch {
+    return false;
+  }
 }
 
-function writeFile(filePath, content) {
-  return fs.writeFileSync(resolvePath(filePath), content, "utf8");
+export async function makeDir(dirPath) {
+  await fs.mkdir(resolvePath(dirPath));
 }
 
-function readFile(filePath) {
-  return fs.readFileSync(resolvePath(filePath), "utf8");
+export async function writeFile(filePath, content) {
+  if (content === undefined || content === null) return false;
+
+  // prep directory
+  const dirPath = dirname(filePath);
+  if (!dirExists(dirPath)) {
+    await makeDir(dirPath);
+  }
+
+  // write File
+  const fullPath = resolvePath(filePath);
+  if (typeof content === "object") {
+    // write objects as stringified json
+    await fs.writeFile(fullPath, JSON.stringify(content), "utf8");
+    return;
+  }
+
+  await fs.writeFile(fullPath, `${content}`, "utf8");
 }
 
-function mkdir(dirPath) {
-  fs.mkdirSync(resolvePath(dirPath));
+export async function readFile(filePath) {
+  // check that file exists
+  if (!fileExists(filePath)) {
+    return false;
+  }
+
+  // read file
+  try {
+    return await fs.readFile(resolvePath(filePath), "utf8");
+  } catch {
+    return false;
+  }
 }
 
-module.exports = { fileExists, writeFile, readFile, mkdir };
+export async function readFileJson(filePath) {
+  try {
+    const fileContent = await readFile(filePath);
+    if (!fileContent) return false;
+    return JSON.parse(fileContent);
+  } catch {
+    return false;
+  }
+}
