@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "update:atlas_na": "node updater.js atlas_na",
-    "update:atlas_na:force": "node updater.js --force atlas_na",
-    "update:atlas_jp": "node updater.js atlas_jp",
-    "update:atlas_jp:force": "node updater.js --force atlas_jp",
-    "update:atlas": "node updater.js atlas_na atlas_jp"
+    "update_na": "node updater.js atlas_na",
+    "update_na:force": "node updater.js --force atlas_na",
+    "update_jp": "node updater.js atlas_jp",
+    "update_jp:force": "node updater.js --force atlas_jp",
+    "update": "node updater.js atlas_na atlas_jp",
+    "mats": "node scripts/fgo-spreadsheet/make-material-list.js",
+    "servant": "node scripts/fgo-spreadsheet/make-servant.js"
   },
   "license": "MIT",
   "dependencies": {
