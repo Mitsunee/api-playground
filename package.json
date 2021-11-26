@@ -1,21 +1,40 @@
 {
-  "name": "fgo-spreadsheet",
+  "name": "api-playground",
   "version": "1.0.0",
-  "main": "index.js",
+  "license": "WTFPL",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "update_na": "node updater.js atlas_na",
-    "update_na:force": "node updater.js --force atlas_na",
-    "update_jp": "node updater.js atlas_jp",
-    "update_jp:force": "node updater.js --force atlas_jp",
-    "update": "node updater.js atlas_na atlas_jp",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "prepare": "simple-git-hooks",
     "mats": "node scripts/fgo-spreadsheet/make-material-list.js",
     "servant": "node scripts/fgo-spreadsheet/make-servant.js"
   },
-  "license": "MIT",
+  "eslintConfig": {
+    "extends": "@foxkit"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn lint-staged"
+  },
+  "lint-staged": {
+    "**/*.{mjs,cjs,js}": [
+      "eslint",
+      "prettier -w"
+    ],
+    "**/*.{json,md}": [
+      "prettier -w"
+    ]
+  },
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^3.1.0"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "@foxkit/eslint-config": "^1.0.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "lint-staged": "^12.1.2",
+    "prettier": "^2.5.0",
+    "simple-git-hooks": "^2.7.0"
   }
 }
