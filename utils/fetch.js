@@ -14,7 +14,7 @@ export async function fetchJson(url) {
   try {
     const resContent = await fetch(url);
     if (!resContent) return false;
-    return JSON.parse(resContent);
+    return await resContent.json();
   } catch (e) {
     return false;
   }

@@ -44,10 +44,10 @@ class ApiEndpoint {
       log.error(`Could not fetch endpoint '${this.name}'`);
       return false;
     }
-    await Promise.all(
+    await Promise.all([
       writeFile(joinPath(this.dir, "data.json"), data),
       writeFile(joinPath(this.dir, "version"), `${version}`)
-    );
+    ]);
     log.complete(`Fetch updated data for endpoint '${this.name}'`);
     return data;
   }
@@ -90,11 +90,11 @@ export class Api {
     return this;
   }
 
-  async loadEndpoints([endpoints]) {
+  async loadEndpoints(endpoints) {
     const version = await this.getVersion();
     const data = [];
 
-    for (let i = 0; i < endpoints.length; i += 0) {
+    for (let i = 0; i < endpoints.length; i++) {
       const endpoint = this.endpoints.get(endpoints[i]);
 
       if (!endpoint) {
