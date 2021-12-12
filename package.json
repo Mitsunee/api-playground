@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "format": "prettier -w .",
     "prepare": "simple-git-hooks",
-    "mats": "node scripts/fgo-spreadsheet/make-material-list.js",
+    "mats": "node scripts/fgo-spreadsheet/make-material-data.js",
     "servant": "node scripts/fgo-spreadsheet/make-servant.js"
   },
   "eslintConfig": {
