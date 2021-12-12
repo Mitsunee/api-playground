@@ -23,7 +23,7 @@ export async function fileExists(filePath) {
 }
 
 export async function makeDir(dirPath) {
-  await fs.mkdir(resolvePath(dirPath));
+  await fs.mkdir(resolvePath(dirPath), { recursive: true });
 }
 
 export async function writeFile(filePath, content) {
@@ -31,7 +31,7 @@ export async function writeFile(filePath, content) {
 
   // prep directory
   const dirPath = dirname(filePath);
-  if (!dirExists(dirPath)) {
+  if (!(await dirExists(dirPath))) {
     await makeDir(dirPath);
   }
 
