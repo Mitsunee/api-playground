@@ -1,8 +1,8 @@
-function servantDescriptor(
-  { traits, ascensionAdd, collectionNo, name, className }, // deconstructed servant
+export function servantDescriptor(
+  { collectionNo, name, className }, // deconstructed servant
   niceServant // optional
 ) {
-  const paddedCollectionNo = ("0000" + collectionNo).slice(-3);
+  const paddedCollectionNo = `0000${collectionNo}`.slice(-3);
 
   /* determine if we need to show the class
    * - either we have a niceServant and can check if there are more servants of the same name
@@ -23,5 +23,3 @@ function servantDescriptor(
 
   return descriptor;
 }
-
-module.exports = { servantDescriptor };
