@@ -1,36 +1,21 @@
-const readline = require("readline");
-const niceServant = require("../../cache/atlas_jp/nice_servant_lang_en");
+import { readline } from "../../utils/readline.js";
+import { atlasConnector } from "../../utils/api/atlas/connector.js";
+import { splitSkillValues } from "../../utils/fgo/splitSkillValues.js";
+
 const { servantDescriptor } = require("../helpers/servantDescriptor");
 const { makeMaterialRows } = require("./helpers/makeMaterialRows");
 const { makeServantRow } = require("./helpers/makeServantRow");
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-function getInput(prompt) {
-  return new Promise(resolve => {
-    rl.question(prompt + ": ", input => resolve(input.trim()));
-  });
-}
-
-function processNumberInput(input, defaultValue, test, delimiter) {
-  let value = defaultValue;
-  if (input !== "" && (!test || test.test(input))) value = input;
-  return value
-    .split(delimiter ?? "/")
-    .map(v => (isNaN(Number(v)) ? v : Number(v)));
-}
-
 // process input
 
 async function main() {
-  // Get user input
+  const rl = readline();
+  const atlasJp = await atlasConnector("JP");
+  const niceServant = await atlasJp.getExport("nice_servant_lang_en");
   let input;
 
   // Servant ID
-  input = await getInput("Servant ID or Collection Number");
+  input = await rl.question("Servant ID or Collection Number");
   const requestedServant = Number(input);
   const servant = niceServant.find(
     ({ id, collectionNo }) =>
@@ -39,12 +24,12 @@ async function main() {
 
   // error handle
   if (!servant) {
-    console.log("Could not find servant " + requestedServant);
+    console.log(`Could not find servant ${requestedServant}`);
     return 1;
   }
 
   // Nickname
-  const nickname = await getInput("Servant Nickname");
+  const nickname = await rl.question("Servant Nickname");
 
   // output confirmation
   console.log(
@@ -57,8 +42,8 @@ async function main() {
   );
 
   // Ascension
-  input = await getInput("Ascension (default: 0/4)");
-  const [ascension, ascensionTarget] = processNumberInput(
+  input = await rl.question("Ascension (default: 0/4)");
+  const [ascension, ascensionTarget] = splitSkillValues(
     input,
     "0/4",
     /[0-4]\/[0-4]/
@@ -69,20 +54,20 @@ async function main() {
   const skillTarget = {};
 
   // skill 1
-  input = await getInput("Skill 1 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Skill 1 (default: 1/10)");
+  input = splitSkillValues(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
   skills[1] = input[0];
   skillTarget[1] = input[1];
 
   // skill 2
-  input = await getInput("Skill 2 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Skill 2 (default: 1/10)");
+  input = splitSkillValues(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
   skills[2] = input[0];
   skillTarget[2] = input[1];
 
   // skill 3
-  input = await getInput("Skill 3 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Skill 3 (default: 1/10)");
+  input = splitSkillValues(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
   skills[3] = input[0];
   skillTarget[3] = input[1];
 
@@ -91,20 +76,20 @@ async function main() {
   const appendTarget = {};
 
   // skill 1
-  input = await getInput("Append Skill 1 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Append Skill 1 (default: 1/1)");
+  input = splitSkillValues(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
   appends[1] = input[0];
   appendTarget[1] = input[1];
 
   // skill 2
-  input = await getInput("Append Skill 2 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Append Skill 2 (default: 1/1)");
+  input = splitSkillValues(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
   appends[2] = input[0];
   appendTarget[2] = input[1];
 
   // skill 2
-  input = await getInput("Append Skill 3 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
+  input = await rl.question("Append Skill 3 (default: 1/1)");
+  input = splitSkillValues(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
   appends[3] = input[0];
   appendTarget[3] = input[1];
 
@@ -112,7 +97,7 @@ async function main() {
   console.log("\n", makeServantRow(servant, nickname), "\n");
 
   // output ascension materials
-  for (let ascensionIdx in servant.ascensionMaterials) {
+  for (const ascensionIdx in servant.ascensionMaterials) {
     const ascStage = +ascensionIdx + 1;
     if (ascStage <= ascension || ascStage > ascensionTarget) continue;
 
@@ -127,7 +112,7 @@ async function main() {
 
   // output skill materials
   for (let skillNo = 1; skillNo < 4; skillNo++) {
-    for (let skillIdx in servant.skillMaterials) {
+    for (const skillIdx in servant.skillMaterials) {
       const skillStage = +skillIdx + 1;
 
       if (skillStage <= skills[skillNo] || skillStage > skillTarget[skillNo])
@@ -145,7 +130,7 @@ async function main() {
 
   // output append skill materials
   for (let skillNo = 1; skillNo < 4; skillNo++) {
-    for (let skillIdx in servant.appendSkillMaterials) {
+    for (const skillIdx in servant.appendSkillMaterials) {
       const skillStage = +skillIdx + 1;
 
       if (skillStage <= appends[skillNo] || skillStage > appendTarget[skillNo])
