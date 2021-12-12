@@ -1,3 +1,7 @@
+import { die } from "../utils/log.js";
+die("Script not ported to new API utils");
+/// NOT PORTED TO NEW API UTILS
+
 const niceServant = require("../cache/atlas_jp/nice_servant_lang_en");
 const { servantDescriptor } = require("./helpers/servantDescriptor");
 
