@@ -1,5 +1,5 @@
-export function splitSkillValues(input, defaultValue) {
-  const test = /(?:10|[1-9])\/(?:10|[1-9])/;
+export function splitAscensionValues(input, defaultValue) {
+  const test = /[1-4]\/[1-4]/;
   let value = defaultValue;
 
   if (input !== "" && test.test(input)) value = input;

@@ -1,5 +1,15 @@
-import { makeMaterialDataRow } from "../../utils/fgo-spreadsheet/makeMaterialDataRow.js";
 import { atlasConnector } from "../../utils/api/atlas/connector.js";
+
+function makeMaterialDataRow(material) {
+  const row = [
+    material.id,
+    material.name,
+    material.background,
+    `=IMAGE("${material.icon}")`
+  ];
+
+  return row.join("\t");
+}
 
 async function main() {
   const atlasJp = await atlasConnector("JP");
