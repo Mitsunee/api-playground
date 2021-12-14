@@ -3,14 +3,14 @@ import { makeUsageRows, printUsageRows } from "./makeUsageRows.js";
 
 export async function makeAscensionUsage({ servant, rl }) {
   const { collectionNo, ascensionMaterials } = servant;
-  const input = await rl.question("\nCurrent Stage (default: 0/4)");
+  const input = await rl.question("\nCurrent/Target (default: 0/4)");
   const [currentAscension, ascensionTarget] = splitAscensionValues(
     input,
     "0/4"
   );
 
   // handle bad input
-  if (currentAscension >= 4 || currentAscension >= ascensionTarget) return;
+  if (currentAscension >= Math.min(4, ascensionTarget)) return;
 
   // make rows
   const rows = new Array();

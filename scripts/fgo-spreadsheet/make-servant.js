@@ -8,6 +8,11 @@ import { capitalize } from "../../utils/capitalize.js";
 // scripts
 import { makeServantData } from "./make-servant/makeServantData.js";
 import { makeAscensionUsage } from "./make-servant/makeAscensionUsage.js";
+import {
+  makeSkillUsage,
+  makeAppendUsage
+} from "./make-servant/makeSkillUsage.js";
+import { makeCostumeUsage } from "./make-servant/makeCostumeUsage.js";
 
 // setup commander
 const program = new Command();
@@ -25,9 +30,9 @@ program.configureOutput({ writeErr: str => die(str.trim()) });
 const menus = new Map([
   ["data", { text: "Servant Data", script: makeServantData }],
   ["ascension", { text: "Ascension", script: makeAscensionUsage }],
-  ["skill", { text: "Skill Enhancement" }],
-  ["append", { text: "Append Skill Enhancement" }],
-  ["costume", { text: "Costume Unlock" }],
+  ["skill", { text: "Skill Enhancement", script: makeSkillUsage }],
+  ["append", { text: "Append Skill Enhancement", script: makeAppendUsage }],
+  ["costume", { text: "Costume Unlock", script: makeCostumeUsage }],
   ["quit", { text: "Exit" }]
 ]);
 function makeSelectionMenu(servant) {
@@ -110,7 +115,7 @@ async function main(opts) {
       quit = true;
       break;
     }
-    await cb({ servant, rl, opts });
+    await cb({ servant, rl, opts, atlasJp });
   }
 
   rl.close();
