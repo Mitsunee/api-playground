@@ -6,9 +6,8 @@ This repository is currently getting rewriten. Consider all the APIs unstable fo
 
 - **cache age**: Minimum amount of time that needs to pass before rechecking info
 - probably some way to point at the timestamp of api info
-- is there a way to put data into the user's clipboard?
-- finish porting make-servant.js
-- update package.json scripts?
+- make-ce script
+- make-mc-list script
 - port skipped scripts
 
 ## License

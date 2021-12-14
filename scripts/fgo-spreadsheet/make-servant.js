@@ -27,63 +27,33 @@ program.option("-n, --name <name>", "Set servant nickname");
 program.configureOutput({ writeErr: str => die(str.trim()) });
 
 // setup menus
-const menus = new Map([
-  ["data", { text: "Servant Data", script: makeServantData }],
-  ["ascension", { text: "Ascension", script: makeAscensionUsage }],
-  ["skill", { text: "Skill Enhancement", script: makeSkillUsage }],
-  ["append", { text: "Append Skill Enhancement", script: makeAppendUsage }],
-  ["costume", { text: "Costume Unlock", script: makeCostumeUsage }],
-  ["quit", { text: "Exit" }]
-]);
 function makeSelectionMenu(servant) {
-  const selections = ["data"];
+  const selections = [{ label: "Servant Data", value: makeServantData }];
   if (
     Object.keys(servant.ascensionMaterials).length > 0 &&
     Object.values(servant.ascensionMaterials).some(stage =>
       stage.items.some(({ item }) => item.type !== "eventItem")
     )
   ) {
-    selections.push("ascension");
+    selections.push({ label: "Ascension", value: makeAscensionUsage });
   }
   if (Object.keys(servant.skillMaterials).length > 0) {
-    selections.push("skill");
+    selections.push({ label: "Skill Enhancement", value: makeSkillUsage });
   }
   if (Object.keys(servant.appendSkillMaterials).length > 0) {
-    selections.push("append");
+    selections.push({
+      label: "Append Skill Enhancement",
+      value: makeAppendUsage
+    });
   }
   if (Object.keys(servant.costumeMaterials).length > 0) {
-    selections.push("costume");
+    selections.push({ label: "Costume Unlock", value: makeCostumeUsage });
   }
-  selections.push("quit");
+  selections.push({ label: "Exit", value: "quit" });
 
-  const text = `\nWhat data do you want to generate for ${
-    servant.name
-  }?${selections
-    .map((sel, i) => {
-      const selection = menus.get(sel);
-      if (!selection) return "";
-      return `\n  ${i}) ${selection.text}`;
-    })
-    .join("")}\nOption (0-${selections.length - 1})`;
+  const text = `What data do you want to generate for ${servant.name}?`;
 
-  const getCallback = input => {
-    if (!input) return false;
-
-    // get from selections and check for quit option
-    const sel = selections[input];
-    if (!sel) return null;
-    if (sel === "quit") return false;
-
-    // get from global map
-    const selection = menus.get(sel);
-    if (!selection) return null;
-    if (!selection.script) return () => log.error(`Unimplemented: ${sel}`);
-
-    // return callback
-    return selection.script;
-  };
-
-  return { selections, text, getCallback };
+  return { selections, text };
 }
 
 async function main(opts) {
@@ -104,15 +74,10 @@ async function main(opts) {
   );
 
   while (!quit) {
-    const menu = makeSelectionMenu(servant);
-    const input = await rl.question(menu.text);
-    const cb = menu.getCallback(input);
-    if (cb === null) {
-      log.error("Invalid Option");
-      continue;
-    }
-    if (cb === false) {
-      quit = true;
+    const { selections, text } = makeSelectionMenu(servant);
+    const cb = await rl.menu(selections, text);
+    if (typeof cb !== "function") {
+      if (cb === false) log.error("Invalid Option");
       break;
     }
     await cb({ servant, rl, opts, atlasJp });

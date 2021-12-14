@@ -1,23 +1,19 @@
 import { atlasConnector } from "../../../utils/api/atlas/connector.js";
+import { log } from "../../../utils/log.js";
 import { makeUsageRows, printUsageRows } from "./makeUsageRows.js";
 
 async function costumeSelector({ profile, profileNa, rl }) {
   const costumes = Object.keys(profile.costume);
   if (costumes.length < 2) return costumes[0];
 
-  const list = costumes.map(
-    (costumeIndex, idx) =>
-      `\n  ${idx}) ${
-        profileNa?.costume[costumeIndex]?.name ||
-        profile.costume[costumeIndex].name
-      }`
-  );
-  const choice = await rl.question(
-    `\nChoose costume:${list}\nOption (0-${costumes.length - 1})`
-  );
-  const costume = costumes[choice];
+  const list = costumes.map(costumeKey => ({
+    value: costumeKey,
+    label:
+      profileNa?.costume[costumeKey]?.shortName ||
+      profile.costume[costumeKey].shortName
+  }));
 
-  return costume || null;
+  return await rl.menu(list, `Choose costume`);
 }
 
 export async function makeCostumeUsage({ servant, rl, atlasJp }) {
@@ -36,7 +32,10 @@ export async function makeCostumeUsage({ servant, rl, atlasJp }) {
 
   // get user selection
   const key = await costumeSelector({ profile, profileNa, rl });
-  if (key === null) return;
+  if (!key) {
+    if (key === false) log.error("Invalid Option");
+    return;
+  }
 
   const rows = new Array();
   const { items } = costumeMaterials[key];
