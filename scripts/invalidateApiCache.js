@@ -31,7 +31,9 @@ async function main() {
   );
 
   switch (target) {
-    case null: {
+    case null:
+    case false:
+    case undefined: {
       log("No cache file was chosen");
       rl.close();
       return;

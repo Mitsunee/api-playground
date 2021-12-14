@@ -31,13 +31,13 @@ export function readline() {
     }
 
     const list = options.map((option, idx) => `  ${idx}) ${getLabel(option)}`);
-    const selection = parseInt(
-      await question(
-        `\n${text}:\n${list.join("\n")}\nOption (0-${list.length - 1})`
-      )
+    const input = await question(
+      `\n${text}:\n${list.join("\n")}\nOption (0-${list.length - 1})`
     );
+    const selection = parseInt(input);
 
-    if (isNaN(selection) || selection >= list.length) return null;
+    if (input === "") return null;
+    if (isNaN(selection) || selection >= list.length) return false;
     return getValue(options[selection]);
   };
 
