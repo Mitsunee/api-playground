@@ -7,7 +7,11 @@ function mapAllMats(servant) {
   return [
     ...Object.values(servant.ascensionMaterials),
     ...Object.values(servant.skillMaterials),
+    ...Object.values(servant.skillMaterials), // lol
+    ...Object.values(servant.skillMaterials), // too lazy to map that
     ...Object.values(servant.appendSkillMaterials),
+    ...Object.values(servant.appendSkillMaterials), // enjoy CPU usage
+    ...Object.values(servant.appendSkillMaterials), // Ryzen 5 worth it now :)
     ...Object.values(servant.costumeMaterials)
   ];
 }
@@ -65,10 +69,10 @@ async function main() {
   const needsJP = calcNeeds(niceServant);
   const needsNA = calcNeeds(niceServantNA);
 
-  console.log("JP:");
-  console.table(needsJP);
-  console.log("\nNA:");
+  console.log("NA:");
   console.table(needsNA);
+  console.log("\nJP:");
+  console.table(needsJP);
 }
 
 main();
