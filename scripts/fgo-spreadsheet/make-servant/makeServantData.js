@@ -1,13 +1,14 @@
 import { getNiceServantFaces } from "../../../utils/fgo/getNiceServantFaces.js";
-import { capitalize } from "../../../utils/capitalize.js";
+import { nameClass } from "../../../utils/fgo/nameServant.js";
 
-function makeServantDataRow({ servant, nickname, image }) {
+export function makeServantDataRow({ servant, nickname, image }) {
   const row = [
     servant.collectionNo,
     nickname,
     `=IMAGE("${image}")`,
     servant.rarity,
-    capitalize(servant.className)
+    servant.cost,
+    nameClass(servant.className)
   ];
 
   return row.join("\t");

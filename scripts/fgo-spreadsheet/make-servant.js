@@ -61,11 +61,15 @@ async function main(opts) {
   const rl = readline();
   const atlasJp = await atlasConnector("JP");
   const niceServant = await atlasJp.getExport("nice_servant_lang_en");
+  const atlasNa = await atlasConnector("NA");
+  const niceServantNa = await atlasNa.getExport("nice_servant");
   let quit;
 
   // get servant by id or collectionNo
   const servant = searchNiceServant(niceServant, opts.servant);
   if (!servant) die(`Couldn't find servant '${opts.servant}'`);
+  const servantNa = searchNiceServant(niceServantNa, opts.servant);
+  if (servantNa) servant.name = servantNa.name; // this could probably be solved better...
 
   // print confirmation for user
   console.log(
