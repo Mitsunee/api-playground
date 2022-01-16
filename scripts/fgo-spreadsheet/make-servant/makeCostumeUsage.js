@@ -1,5 +1,6 @@
+import { log } from "@foxkit/node-util/log";
+
 import { atlasConnector } from "../../../utils/api/atlas/connector.js";
-import { log } from "../../../utils/log.js";
 import { makeUsageRows, printUsageRows } from "./makeUsageRows.js";
 
 async function costumeSelector({ profile, profileNa, rl }) {

@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "fs";
-
-import { resolvePath } from "./path.js";
-import { die } from "./log.js";
+import { resolvePath } from "@foxkit/node-util/path";
+import { die } from "@foxkit/node-util/log";
 
 function checkRoot() {
   if (process.cwd().includes("node_modules")) return false;

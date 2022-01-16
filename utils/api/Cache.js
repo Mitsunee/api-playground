@@ -1,6 +1,6 @@
 import { slugify } from "modern-diacritics";
-import { joinPath } from "../path.js";
-import { readFileJson, writeFile } from "../fs.js";
+import { joinPath } from "@foxkit/node-util/path";
+import { readFileJson, writeFile } from "@foxkit/node-util/fs";
 import { isRoot } from "../isRoot.js";
 
 isRoot();

@@ -1,4 +1,4 @@
-import { fetchJson } from "../../fetch.js";
+import { fetchJson } from "@foxkit/node-util/fetch";
 
 // global memo
 const apiInfo = fetchJson("https://api.atlasacademy.io/info");

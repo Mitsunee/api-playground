@@ -1,6 +1,7 @@
 import { Command } from "commander/esm.mjs";
-import { log, die } from "../../utils/log.js";
-import { readline } from "../../utils/readline.js";
+import { log, die } from "@foxkit/node-util/log";
+import { readline } from "@foxkit/node-util/readline";
+
 import { atlasConnector } from "../../utils/api/atlas/connector.js";
 import { searchNiceServant } from "../../utils/fgo/searchNiceServant.js";
 import { capitalize } from "../../utils/capitalize.js";

@@ -1,5 +1,6 @@
-import { readFileJson, writeFile } from "../fs.js";
-import { joinPath } from "../path.js";
+import { readFileJson, writeFile } from "@foxkit/node-util/fs";
+import { joinPath } from "@foxkit/node-util/path";
+
 import { deepEqual } from "../object.js";
 
 export class VersionTracker {

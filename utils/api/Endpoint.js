@@ -1,5 +1,5 @@
 import { slugify } from "modern-diacritics";
-import { fetchJson } from "../fetch.js";
+import { fetchJson } from "@foxkit/node-util/fetch";
 
 export class Endpoint {
   constructor({ url, name }) {

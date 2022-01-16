@@ -1,9 +1,10 @@
+import { readline } from "@foxkit/node-util/readline";
+import { resolvePath } from "@foxkit/node-util/path";
+import { readFileJson, writeFile } from "@foxkit/node-util/fs";
+import { die, log } from "@foxkit/node-util/log";
+
 import { isRoot } from "../utils/isRoot.js";
-import { readline } from "../utils/readline.js";
 import { readdir, rm } from "fs/promises";
-import { resolvePath } from "../utils/path.js";
-import { readFileJson, writeFile } from "../utils/fs.js";
-import { die, log } from "../utils/log.js";
 
 isRoot();
 
