@@ -10,7 +10,8 @@
     "prepare": "simple-git-hooks",
     "invalidate": "node scripts/invalidateApiCache.js",
     "mats": "node scripts/fgo-spreadsheet/make-material-data.js",
-    "servant": "node scripts/fgo-spreadsheet/make-servant.js"
+    "servant": "node scripts/fgo-spreadsheet/make-servant.js",
+    "ce": "node scripts/fgo-spreadsheet/make-ce-data.js"
   },
   "eslintConfig": {
     "extends": "@foxkit"
