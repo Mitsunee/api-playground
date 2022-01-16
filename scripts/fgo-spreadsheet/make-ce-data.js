@@ -17,7 +17,7 @@ program.configureOutput({ writeErr: str => die(str.trim()) });
 
 function makeCeRow({ ce, name }) {
   const row = [
-    ce.id,
+    ce.collectionNo,
     name,
     `=IMAGE("${ce.extraAssets.faces.equip[ce.id]}")`,
     `=IMAGE("${ce.extraAssets.equipFace.equip[ce.id]}")`,
