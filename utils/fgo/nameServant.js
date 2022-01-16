@@ -2,6 +2,11 @@ import { capitalize } from "../capitalize.js";
 
 const classNameMap = new Map([["alterEgo", "Alter Ego"]]);
 
+export function nameClass(className) {
+  if (classNameMap.has(className)) return classNameMap.get(className);
+  return capitalize(className);
+}
+
 export function nameServant({
   servant,
   niceServant = [],
@@ -10,6 +15,7 @@ export function nameServant({
 }) {
   const servantNa = niceServantNa?.find(s => s.id === servant.id);
   const servantName = servantNa?.name || servant.name;
+  const className = nameClass(servant.className);
   const isForced = force || niceServant.length < 1;
 
   const nameAppears = niceServant
@@ -17,9 +23,6 @@ export function nameServant({
     .filter(name => name === servant.name).length;
 
   if (nameAppears < 2 && !isForced) return servantName;
-
-  const className =
-    classNameMap.get(servant.className) || capitalize(servant.className);
 
   return `${servantName} (${className})`;
 }
