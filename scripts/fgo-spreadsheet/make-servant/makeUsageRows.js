@@ -1,12 +1,11 @@
 function makeUsageRow({ collectionNo, item, amount, subject }) {
   const row = [
     item.id, // item ID for lookup
-    `=IFERROR(VLOOKUP(${collectionNo},'data/servants'!A:C,3,false))`, // servant icon
-    `=IFERROR(VLOOKUP(${collectionNo},'data/servants'!A:B,2,false))`, // servant name
-    "=IFERROR(VLOOKUP(INDEX(A:A,ROW(),1),'data/materials'!A:D,4,false))", // material icon
-    "=IFERROR(VLOOKUP(INDEX(A:A,ROW(),1),'data/materials'!A:B,2,false))", // material name
+    `=IFERROR(VLOOKUP(${collectionNo},Servants,3,false),"?")`, // servant icon
+    `=IFERROR(VLOOKUP(${collectionNo},Servants,2,false),"Unknown Servant")`, // servant name
+    `=IFERROR(VLOOKUP(INDEX(A:A,ROW(),1),Materials,4,false),"?")`, // material icon
+    `=IFERROR(VLOOKUP(INDEX(A:A,ROW(),1),Materials,2,false),"Unknown Item")`, // material name
     amount,
-    "=IFERROR(VLOOKUP(INDEX(A:A,ROW(),1),'Materials (All Servants)'!A:G,7,false)<=0,FALSE)", // Can do
     subject
   ];
 
