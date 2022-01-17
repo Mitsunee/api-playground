@@ -11,7 +11,8 @@
     "invalidate": "node scripts/invalidateApiCache.js",
     "mats": "node scripts/fgo-spreadsheet/make-material-data.js",
     "servant": "node scripts/fgo-spreadsheet/make-servant.js",
-    "ce": "node scripts/fgo-spreadsheet/make-ce-data.js"
+    "ce": "node scripts/fgo-spreadsheet/make-ce-data.js",
+    "find": "node scripts/find-servant-id.js"
   },
   "eslintConfig": {
     "extends": "@foxkit"
@@ -37,8 +38,9 @@
     "@foxkit/node-util": "^0.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "foxkit": "^0.3.0",
     "lint-staged": "^12.1.2",
-    "modern-diacritics": "^2.0.0",
+    "modern-diacritics": "^2.1.0",
     "picocolors": "^1.0.0",
     "prettier": "^2.5.0",
     "simple-git-hooks": "^2.7.0",

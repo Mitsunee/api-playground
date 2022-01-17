@@ -512,6 +512,11 @@ formdata-polyfill@^4.0.10:
   dependencies:
     fetch-blob "^3.1.2"
 
+foxkit@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/foxkit/-/foxkit-0.3.0.tgz#40f4c67232092eb1c9512d2491d67714d5e817a6"
+  integrity sha512-fYJxi3Z08fzscDHjguWYtG8wgdEa9lAec61By6B+g1Yi2upV13/rVxcGUAa1v6B4UqytQEYe02NOxJECRn6Irg==
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
@@ -768,10 +773,10 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-modern-diacritics@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/modern-diacritics/-/modern-diacritics-2.0.0.tgz#f545d29fda524cec56b066abf0c74be7188d9a3f"
-  integrity sha512-YKVWrmTp9ls/EiRHE/PgudqXqeJSxpj/rKxVmmOCfBVUKsxYma1Mn2hpfFQJCryKLSIsBjk5XFSAXSyFEAf7BQ==
+modern-diacritics@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/modern-diacritics/-/modern-diacritics-2.1.0.tgz#c69872a11d23166ad460b9a11704e20c1494f4e6"
+  integrity sha512-NXPazScxSeMrv2ceAQg5vZMBJ9gWUncouB+dwMFrhwPKtuO0M5DSwx/pvF2VUYKMyPXhw1ix07ahS19MUHp/OA==
 
 ms@2.1.2:
   version "2.1.2"
