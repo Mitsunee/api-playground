@@ -7,15 +7,17 @@ export async function makeSkillUsage({ servant, rl, append = false }) {
     ? servant.appendSkillMaterials
     : servant.skillMaterials;
   const rows = new Array();
-  const defaultStage = `1/${append ? 1 : 9}`;
+  let input;
+
+  input = await rl.question("Current Skill Levels (default: 1/1/1)");
+  const currentLevels = splitSkillValues(input, "1/1/1");
+  const targetDefaults = append ? currentLevels.join("/") : "9/9/9";
+  input = await rl.question(`Target Skill Levels (default: ${targetDefaults})`);
+  const targetLevels = splitSkillValues(input, targetDefaults);
 
   for (let num = 1; num <= 3; num++) {
-    const input = await rl.question(
-      `${
-        num === 1 ? "\n" : ""
-      }Skill ${num} Current/Target (default: ${defaultStage})`
-    );
-    const [currentLevel, targetLevel] = splitSkillValues(input, defaultStage);
+    const currentLevel = currentLevels[num - 1];
+    const targetLevel = targetLevels[num - 1];
 
     if (currentLevel >= Math.min(10, targetLevel)) continue;
 
@@ -29,9 +31,9 @@ export async function makeSkillUsage({ servant, rl, append = false }) {
         }`
       }).forEach(row => rows.push(row));
     }
-  }
 
-  if (rows.length > 0) printUsageRows(rows);
+    if (rows.length > 0) printUsageRows(rows);
+  }
 }
 
 // returns promise!
