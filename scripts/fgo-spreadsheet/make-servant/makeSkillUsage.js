@@ -1,3 +1,5 @@
+import { clamp } from "foxkit/clamp";
+
 import { splitSkillValues } from "../../../utils/fgo/splitSkillValues.js";
 import { makeUsageRows, printUsageRows } from "./makeUsageRows.js";
 
@@ -11,7 +13,9 @@ export async function makeSkillUsage({ servant, rl, append = false }) {
 
   input = await rl.question("Current Skill Levels (default: 1/1/1)");
   const currentLevels = splitSkillValues(input, "1/1/1");
-  const targetDefaults = append ? currentLevels.join("/") : "9/9/9";
+  const targetDefaults = append
+    ? currentLevels.join("/")
+    : currentLevels.map(value => clamp({ min: 9, max: 10, value })).join("/");
   input = await rl.question(`Target Skill Levels (default: ${targetDefaults})`);
   const targetLevels = splitSkillValues(input, targetDefaults);
 
@@ -26,7 +30,7 @@ export async function makeSkillUsage({ servant, rl, append = false }) {
       makeUsageRows({
         collectionNo,
         items,
-        subject: `${append ? "Append " : ""}Skill ${num} ${stage} to ${
+        subject: `${append ? "Append " : ""}Skill ${num} Lv. ${stage} ⇒ ${
           stage + 1
         }`
       }).forEach(row => rows.push(row));
