@@ -30,7 +30,7 @@ export async function makeServantData({ servant, opts, rl }) {
   input = Number(
     await rl.question(`\nPick Artwork (0-${artworks.length - 1})`)
   );
-  const artwork = input ? (isNaN(+input) ? 0 : +input) : 0;
+  const artwork = input ? (isNaN(+input) ? 3 : +input) : 3;
   const image = artworks[artwork][1];
 
   console.log(`\n${makeServantDataRow({ servant, nickname, image })}`);
