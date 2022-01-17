@@ -31,9 +31,9 @@ export async function makeSkillUsage({ servant, rl, append = false }) {
         }`
       }).forEach(row => rows.push(row));
     }
-
-    if (rows.length > 0) printUsageRows(rows);
   }
+
+  if (rows.length > 0) printUsageRows(rows);
 }
 
 // returns promise!
