@@ -1,8 +1,12 @@
+import { die } from "@foxkit/node-util/log";
+die("Script not ported to new API utils");
+/// NOT PORTED TO NEW API UTILS
+
 const niceServant = require("../cache/atlas_jp/nice_servant_lang_en");
 const { servantDescriptor } = require("./helpers/servantDescriptor");
 const { sortByCollectionNo } = require("./helpers/sorting");
 
-findChargeFunc = ({ funcTargetTeam, funcType, funcTargetType, svals }) =>
+const findChargeFunc = ({ funcTargetTeam, funcType, funcTargetType, svals }) =>
   funcTargetTeam === "player" &&
   funcType === "gainNp" &&
   (funcTargetType === "ptOne" || funcTargetType === "ptAll") &&
@@ -20,6 +24,6 @@ chargeServants.forEach(servant => {
   );
 
   console.log(
-    servantDescriptor(servant, niceServant) + ` - #${skill.num} - ${skill.name}`
+    `${servantDescriptor(servant, niceServant)} - #${skill.num} - ${skill.name}`
   );
 });

@@ -1,7 +1,11 @@
+import { die } from "@foxkit/node-util/log";
+die("Script not ported to new API utils");
+/// NOT PORTED TO NEW API UTILS
+
 const niceServant = require("../cache/atlas_jp/nice_servant_lang_en");
 const { servantDescriptor } = require("./helpers/servantDescriptor");
 
-let out = [];
+const out = [];
 
 // build list
 niceServant
@@ -60,7 +64,7 @@ niceServant
     // or some match
     addTraits.forEach(({ name, check }) => {
       if (check === true) {
-        out.push(descriptor + ` [${name}]`);
+        out.push(`${descriptor} [${name}]`);
       }
     });
   });

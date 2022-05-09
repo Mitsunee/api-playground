@@ -1,21 +1,57 @@
 {
-  "name": "fgo-spreadsheet",
+  "name": "api-playground",
   "version": "1.0.0",
-  "main": "index.js",
+  "license": "WTFPL",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "update_na": "node updater.js atlas_na",
-    "update_na:force": "node updater.js --force atlas_na",
-    "update_jp": "node updater.js atlas_jp",
-    "update_jp:force": "node updater.js --force atlas_jp",
-    "update": "node updater.js atlas_na atlas_jp",
-    "mats": "node scripts/fgo-spreadsheet/make-material-list.js",
-    "servant": "node scripts/fgo-spreadsheet/make-servant.js"
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "prepare": "simple-git-hooks",
+    "invalidate": "node scripts/invalidateApiCache.js",
+    "mats": "node scripts/fgo-spreadsheet/make-material-data.js",
+    "servant": "node scripts/fgo-spreadsheet/make-servant.js",
+    "ce": "node scripts/fgo-spreadsheet/make-ce-data.js",
+    "find": "node scripts/find-servant-id.js"
   },
-  "license": "MIT",
+  "eslintConfig": {
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended",
+      "foxkit",
+      "prettier"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn nano-staged"
+  },
+  "nano-staged": {
+    "**/*.{mjs,cjs,js}": [
+      "eslint",
+      "prettier -w"
+    ],
+    "**/*.{json,md}": [
+      "prettier -w"
+    ]
+  },
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "commander": "^9.2.0",
+    "node-fetch": "^3.2.4",
+    "picoapi": "^0.2.0"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "@foxkit/node-util": "^0.3.0",
+    "eslint": "^8.15.0",
+    "eslint-config-foxkit": "^1.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "foxkit": "^0.3.0",
+    "modern-diacritics": "^2.3.0",
+    "nano-staged": "^0.8.0",
+    "picocolors": "^1.0.0",
+    "prettier": "^2.6.2",
+    "simple-git-hooks": "^2.7.0",
+    "spacetime": "^7.1.4"
   }
 }

@@ -1,170 +1,96 @@
-const readline = require("readline");
-const niceServant = require("../../cache/atlas_jp/nice_servant_lang_en");
-const { servantDescriptor } = require("../helpers/servantDescriptor");
-const { makeMaterialRows } = require("./helpers/makeMaterialRows");
-const { makeServantRow } = require("./helpers/makeServantRow");
+import { Command } from "commander/esm.mjs";
+import { log, die } from "@foxkit/node-util/log";
+import { readline } from "@foxkit/node-util/readline";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
+import { atlasConnector } from "../../utils/api/atlas/connector.js";
+import { searchNiceServant } from "../../utils/fgo/searchNiceServant.js";
+import { capitalize } from "../../utils/capitalize.js";
+
+// scripts
+import { makeServantData } from "./make-servant/makeServantData.js";
+import { makeAscensionUsage } from "./make-servant/makeAscensionUsage.js";
+import {
+  makeSkillUsage,
+  makeAppendUsage
+} from "./make-servant/makeSkillUsage.js";
+import { makeCostumeUsage } from "./make-servant/makeCostumeUsage.js";
+
+// setup commander
+const program = new Command();
+program.version("0.0.1");
+program.requiredOption("-s, --servant <id>", "Pick servant", arg => {
+  if (isNaN(+arg)) {
+    die("Servant ID/Collection Number must be numeric.");
+  }
+  return +arg;
 });
+program.option("-n, --name <name>", "Set servant nickname");
+program.configureOutput({ writeErr: str => die(str.trim()) });
 
-function getInput(prompt) {
-  return new Promise(resolve => {
-    rl.question(prompt + ": ", input => resolve(input.trim()));
-  });
-}
-
-function processNumberInput(input, defaultValue, test, delimiter) {
-  let value = defaultValue;
-  if (input !== "" && (!test || test.test(input))) value = input;
-  return value
-    .split(delimiter ?? "/")
-    .map(v => (isNaN(Number(v)) ? v : Number(v)));
-}
-
-// process input
-
-async function main() {
-  // Get user input
-  let input;
-
-  // Servant ID
-  input = await getInput("Servant ID or Collection Number");
-  const requestedServant = Number(input);
-  const servant = niceServant.find(
-    ({ id, collectionNo }) =>
-      id === +requestedServant || collectionNo === +requestedServant
-  );
-
-  // error handle
-  if (!servant) {
-    console.log("Could not find servant " + requestedServant);
-    return 1;
+// setup menus
+function makeSelectionMenu(servant) {
+  const selections = [{ label: "Servant Data", value: makeServantData }];
+  if (
+    Object.keys(servant.ascensionMaterials).length > 0 &&
+    Object.values(servant.ascensionMaterials).some(stage =>
+      stage.items.some(({ item }) => item.type !== "eventItem")
+    )
+  ) {
+    selections.push({ label: "Ascension", value: makeAscensionUsage });
   }
+  if (Object.keys(servant.skillMaterials).length > 0) {
+    selections.push({ label: "Skill Enhancement", value: makeSkillUsage });
+  }
+  if (Object.keys(servant.appendSkillMaterials).length > 0) {
+    selections.push({
+      label: "Append Skill Enhancement",
+      value: makeAppendUsage
+    });
+  }
+  if (Object.keys(servant.costumeMaterials).length > 0) {
+    selections.push({ label: "Costume Unlock", value: makeCostumeUsage });
+  }
+  selections.push({ label: "Exit", value: "quit" });
 
-  // Nickname
-  const nickname = await getInput("Servant Nickname");
+  const text = `What data do you want to generate for ${servant.name}?`;
 
-  // output confirmation
+  return { selections, text };
+}
+
+async function main(opts) {
+  const rl = readline();
+  const atlasJp = await atlasConnector("JP");
+  const niceServant = await atlasJp.getExport("nice_servant_lang_en");
+  const atlasNa = await atlasConnector("NA");
+  const niceServantNa = await atlasNa.getExport("nice_servant");
+  let quit;
+
+  // get servant by id or collectionNo
+  const servant = searchNiceServant(niceServant, opts.servant);
+  if (!servant) die(`Couldn't find servant '${opts.servant}'`);
+  const servantNa = searchNiceServant(niceServantNa, opts.servant);
+  if (servantNa) servant.name = servantNa.name; // this could probably be solved better...
+
+  // print confirmation for user
   console.log(
-    {
-      requestedServant,
-      nickname,
-      servant: servantDescriptor(servant, niceServant)
-    },
-    "\n"
+    `Selected Servant:\n  [${servant.id}] ${servant.rarity}* ${capitalize(
+      servant.className
+    )} ${servant.name}${opts.name ? `\nNickname: ${opts.name}` : ""}`
   );
 
-  // Ascension
-  input = await getInput("Ascension (default: 0/4)");
-  const [ascension, ascensionTarget] = processNumberInput(
-    input,
-    "0/4",
-    /[0-4]\/[0-4]/
-  );
-
-  // Skills
-  const skills = {};
-  const skillTarget = {};
-
-  // skill 1
-  input = await getInput("Skill 1 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
-  skills[1] = input[0];
-  skillTarget[1] = input[1];
-
-  // skill 2
-  input = await getInput("Skill 2 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
-  skills[2] = input[0];
-  skillTarget[2] = input[1];
-
-  // skill 3
-  input = await getInput("Skill 3 (default: 1/10)");
-  input = processNumberInput(input, "1/10", /(10|[1-9])\/(10|[1-9])/);
-  skills[3] = input[0];
-  skillTarget[3] = input[1];
-
-  // Append Skills
-  const appends = {};
-  const appendTarget = {};
-
-  // skill 1
-  input = await getInput("Append Skill 1 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
-  appends[1] = input[0];
-  appendTarget[1] = input[1];
-
-  // skill 2
-  input = await getInput("Append Skill 2 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
-  appends[2] = input[0];
-  appendTarget[2] = input[1];
-
-  // skill 2
-  input = await getInput("Append Skill 3 (default: 1/1)");
-  input = processNumberInput(input, "1/1", /(10|[1-9])\/(10|[1-9])/);
-  appends[3] = input[0];
-  appendTarget[3] = input[1];
-
-  // Output servant
-  console.log("\n", makeServantRow(servant, nickname), "\n");
-
-  // output ascension materials
-  for (let ascensionIdx in servant.ascensionMaterials) {
-    const ascStage = +ascensionIdx + 1;
-    if (ascStage <= ascension || ascStage > ascensionTarget) continue;
-
-    const materialRows = makeMaterialRows(
-      servant.ascensionMaterials[ascensionIdx],
-      servant,
-      nickname,
-      `Ascension ${ascStage}`
-    );
-    console.log(materialRows);
-  }
-
-  // output skill materials
-  for (let skillNo = 1; skillNo < 4; skillNo++) {
-    for (let skillIdx in servant.skillMaterials) {
-      const skillStage = +skillIdx + 1;
-
-      if (skillStage <= skills[skillNo] || skillStage > skillTarget[skillNo])
-        continue;
-
-      const skillRows = makeMaterialRows(
-        servant.skillMaterials[skillIdx],
-        servant,
-        nickname,
-        `Skill ${skillNo} to Lv. ${skillStage}`
-      );
-      console.log(skillRows);
+  while (!quit) {
+    const { selections, text } = makeSelectionMenu(servant);
+    const cb = await rl.menu(selections, text);
+    if (typeof cb !== "function") {
+      if (cb === false) log.error("Invalid Option");
+      break;
     }
+    await cb({ servant, rl, opts, atlasJp });
   }
 
-  // output append skill materials
-  for (let skillNo = 1; skillNo < 4; skillNo++) {
-    for (let skillIdx in servant.appendSkillMaterials) {
-      const skillStage = +skillIdx + 1;
-
-      if (skillStage <= appends[skillNo] || skillStage > appendTarget[skillNo])
-        continue;
-
-      const appendRows = makeMaterialRows(
-        servant.appendSkillMaterials[skillIdx],
-        servant,
-        nickname,
-        `Append Skill ${skillNo} to Lv. ${skillStage}`
-      );
-      console.log(appendRows);
-    }
-  }
+  rl.close();
 }
 
-main()
-  .then(err => process.exit(err ?? 0))
-  .catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
+// run program
+program.parse();
+main(program.opts());
