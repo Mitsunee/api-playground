@@ -24,6 +24,8 @@ export async function atlasConnector(regionArg) {
 
   // return API
   return {
-    getExport
+    getExport,
+    nice: createApi(`${baseUrl}/nice/${region}`),
+    basic: createApi(`${baseUrl}/basic/${region}`)
   };
 }
