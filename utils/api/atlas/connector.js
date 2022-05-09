@@ -1,29 +1,29 @@
+import "picoapi/node-polyfill";
+import { createApi } from "picoapi";
+
 import { getApiInfo } from "./getApiInfo.js";
 import { makeApiCache } from "../makeApiCache.js";
-import { Endpoint } from "../Endpoint.js";
+import { attachApiCache } from "../attachApiCache.js";
 
-export async function atlasConnector(region) {
-  const name = `Atlas ${region.toUpperCase()}`;
+export async function atlasConnector(regionArg) {
+  const region = regionArg;
+  const name = `Atlas ${region}`;
   const current = await getApiInfo(region);
   const baseUrl = "https://api.atlasacademy.io";
 
   const { cache, tracker } = await makeApiCache({ name, current });
 
-  // TODO: rewrite this to use picoapi
-  // endpoints
-  const exportEndpoint = new Endpoint({
-    url: `${baseUrl}/export/${region.toUpperCase()}`,
-    name: "export"
-  });
+  // export endpoint (kinda hacky for now but oh well)
+  const exportEndpoint = createApi(`${baseUrl}/export`);
+  attachApiCache(exportEndpoint, cache, tracker);
+  const getExport = async fileName => {
+    return exportEndpoint[region](
+      fileName.endsWith(".json") ? fileName : `${fileName}.json`
+    );
+  };
 
   // return API
   return {
-    getExport: async function (exportName) {
-      return await exportEndpoint.getData({
-        cache,
-        tracker,
-        query: `${exportName}.json`
-      });
-    }
+    getExport
   };
 }
