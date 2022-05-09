@@ -6,10 +6,14 @@ export async function makeApiCache({ name, current }) {
   const tracker = new VersionTracker(cache.dir);
   await tracker.prepare({ current });
 
-  process.on("beforeExit", async () => {
+  const saveVersions = async () => {
     await tracker.saveVersions();
     process.exit(0);
-  });
+  };
+
+  process.on("beforeExit", saveVersions);
+  process.on("SIGINT", saveVersions);
+  process.on("SIGTERM", saveVersions);
 
   return { cache, tracker };
 }

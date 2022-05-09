@@ -9,6 +9,7 @@ export async function atlasConnector(region) {
 
   const { cache, tracker } = await makeApiCache({ name, current });
 
+  // TODO: rewrite this to use picoapi
   // endpoints
   const exportEndpoint = new Endpoint({
     url: `${baseUrl}/export/${region.toUpperCase()}`,

@@ -1,15 +1,13 @@
 import { readFileJson, writeFile } from "@foxkit/node-util/fs";
 import { joinPath } from "@foxkit/node-util/path";
 
-import { deepEqual } from "../object.js";
-
 export class VersionTracker {
   constructor(dir) {
     this.path = joinPath(dir, "__versions.json");
     this.current = null;
   }
 
-  async prepare({ current = null }) {
+  async prepare({ current = 0 }) {
     this.current = current;
 
     const versions = await readFileJson(this.path);
@@ -23,12 +21,7 @@ export class VersionTracker {
   }
 
   hasUpdate(key) {
-    if (this.current === null || this.versions[key] == null) {
-      return true;
-    }
-    if (typeof this.current === "object") {
-      return !deepEqual(this.current, this.versions[key]);
-    }
+    if (this.versions[key] == null) return true;
     return this.current > this.versions[key];
   }
 
