@@ -3,8 +3,7 @@ import { VersionTracker } from "./VersionTracker.js";
 
 export async function makeApiCache({ name, current }) {
   const cache = new Cache({ name });
-  const tracker = new VersionTracker(cache.dir);
-  await tracker.prepare({ current });
+  const tracker = await VersionTracker.create({ dir: cache.dir, current });
 
   const saveVersions = async () => {
     await tracker.saveVersions();

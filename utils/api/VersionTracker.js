@@ -7,7 +7,13 @@ export class VersionTracker {
     this.current = null;
   }
 
-  async prepare({ current = 0 }) {
+  static async create({ dir, current }) {
+    const tracker = new VersionTracker(dir);
+    await tracker.prepare(current);
+    return tracker;
+  }
+
+  async prepare(current = 0) {
     this.current = current;
 
     const versions = await readFileJson(this.path);
